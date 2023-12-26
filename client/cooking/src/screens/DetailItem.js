@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, View, Alert, Text, Button, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { StyleSheet, View, Alert, Text, Button, TouchableOpacity, SafeAreaView, Image, ScrollView, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Back from '../../assets/back.svg';
-import Trash from '../../assets/trash.svg'
 import { useState, useCallback } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import axios from 'axios';
 import * as FileSystem from 'expo-file-system';
@@ -13,16 +11,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // require the module
 // var RNFS = require('react-native-fs');
 // var path = RNFS.DocumentDirectoryPath + '/test.txt';
+const {width, height} = Dimensions.get('window');
 
 export default function DetaiItem({ route, navigation }) {
 
-    const [data, setData] = useState({
-        title: 'Bông cải xanh',
-        description: 'Bông cải xanh là một loại cây thuộc loài Cải bắp dại, có hoa lớn ở đầu, thường được dùng như rau. Bông cải xanh thường được chế biến bằng cách luộc hoặc hấp, nhưng cũng có thể được ăn sống như là rau sống trong những đĩa đồ nguội khai vị.',
-        type: 'Củ'
-    })
-    const { title, description, type } = data
-    const { photo } = route.params
+    const { photo, item } = route.params
     // console.log(photo.base64)
 
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
@@ -38,15 +31,15 @@ export default function DetaiItem({ route, navigation }) {
     }, []);
 
     const saveItem = async () => {
-        const token = await AsyncStorage.getItem('my-token');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        } else {
-            delete axios.defaults.headers.common['Authorization']
-        }
-        await axios.post('https://w2c.onrender.com/user/ingredients', { photo: `data:image/jpg;base64,${photo.base64}` })
-            .then(res => console.log(res.data))
-            .catch(error => console.log(error))
+        // const token = await AsyncStorage.getItem('my-token');
+        // if (token) {
+        //     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        // } else {
+        //     delete axios.defaults.headers.common['Authorization']
+        // }
+        // await axios.post('https://w2c.onrender.com/user/ingredients', { photo: `data:image/jpg;base64,${photo.base64}` })
+        //     .then(res => console.log(res.data))
+        //     .catch(error => console.log(error))
 
         navigation.navigate('Home')
 
@@ -69,105 +62,76 @@ export default function DetaiItem({ route, navigation }) {
         //         console.log(err.message);
         //     });
     }
-    //192.168.0.103:8081
+
+    const getPhoto = () => {
+        if(typeof item == undefined) {
+            console.log(item)
+            return "data:image/jpg;base64," + photo.base64
+        } else {
+            console.log(item)
+            return item.image
+        }
+    }
 
     return (
-        <SafeAreaView style={{ marginTop: 50, marginHorizontal: 30, flexDirection: 'column', justifyContent: 'space-around', flex: 1 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Back />
-                <Text style={{ fontSize: 18, fontFamily: 'Roboto', fontWeight: 'bold', marginLeft: 80 }}>Nguyên Liệu</Text>
-            </View>
-            <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-                <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Text style={{ fontSize: 24, fontFamily: 'Roboto', fontWeight: 'bold' }}>{title}</Text>
-                <Trash />
-            </View>
-            <View style={{ height: 0.5, backgroundColor: 'grey' }} />
-            <View>
-                <Text style={{ fontSize: 16, fontFamily: 'Roboto', fontWeight: 'bold' }}>Mô Tả</Text>
-                <Text
-                    onTextLayout={onTextLayout}
-                    numberOfLines={textShown ? undefined : 2}
-                    style={{ fontSize: 14, fontFamily: 'Roboto', color: '#9B9B9B', lineHeight: 22 }}>{description}</Text>
-
-                {
-                    lengthMore ? <Text
-                        onPress={toggleNumberOfLines}
-                        style={{ fontSize: 14, fontFamily: 'Roboto', marginTop: 5 }}>{textShown ? 'Rút Gọn' : 'Đọc Thêm'}</Text>
-                        : null
-                }
-            </View>
-
-            <View>
-                <Text style={{ fontSize: 16, fontFamily: 'Roboto', fontWeight: 'bold' }}>
-                    Phân Loại
-                </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 10 }}>
-                    <TouchableOpacity
-                        onPress={() => { }}
-                        style={{ borderRadius: 15, height: 40, width: 110, backgroundColor: '#ffffff', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                        <Text style={{
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                        }}>Chính</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { }}
-                        style={{ borderRadius: 15, height: 40, width: 110, backgroundColor: '#C67C4E', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                        <Text style={{
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                        }}>Mặc Định</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => { }}
-                        style={{ borderRadius: 15, height: 40, width: 110, backgroundColor: '#ffffff', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                        <Text style={{
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                        }}>Phụ</Text>
-                    </TouchableOpacity>
-
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff'}}>
+            <ScrollView
+                showsVerticalScrollIndicator = {false}
+                style={{ marginHorizontal: 30 }}
+            >
+                <View style={{ alignItems: 'center' }}>
+                    <Image style={styles.preview} source={{ uri: getPhoto() }} />
                 </View>
-
-                <View style={{ marginTop: 20 }}>
-                    <TouchableOpacity
-                        onPress={saveItem}
-                        style={styles.button}
-                    >
-                        <Text style={{
-                            fontSize: 16,
-                            color: '#ffffff',
-                            fontFamily: 'Roboto',
-                        }}>Lưu Lại</Text>
-                    </TouchableOpacity>
+                <View style={{}}>
+                    <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{item.title}</Text>
                 </View>
+                <View style={{ height: 0.5, backgroundColor: 'grey', marginTop: 20 }} />
+                <View style={{ marginVertical: 20}}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Mô Tả</Text>
+                    <Text
+                        onTextLayout={onTextLayout}
+                        numberOfLines={textShown ? undefined : 8}
+                        style={{ fontSize: 16, color: '#9B9B9B', marginTop: 20 }}>{item.description}</Text>
 
-            </View>
-
+                    {
+                        lengthMore ? <Text
+                            onPress={toggleNumberOfLines}
+                            style={{ fontSize: 16, marginTop: 5, fontStyle: 'italic' }}>{textShown ? 'Rút Gọn' : 'Đọc Thêm'}</Text>
+                            : null
+                    }
+                </View>  
+            </ScrollView>
+            <View style={{ marginBottom: 20 }}>
+                <TouchableOpacity
+                    onPress={saveItem}
+                    style={styles.btn}
+                >
+                    <Text style={{
+                        fontSize: 16,
+                        color: '#fff',
+                        fontWeight: 'bold',
+                    }}>Lưu Lại</Text>
+                </TouchableOpacity>
+            </View>      
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     preview: {
-        resizeMode: 'contain',
-        height: 300,
-        width: 220,
+        resizeMode: 'cover',
+        height: width - 180,
+        width: width - 60,
         borderRadius: 30,
+        marginVertical: 30,
     },
-    button: {
-        alignItems: 'center',
+    btn: {
+        height: 50,
+        borderRadius: 16,
         backgroundColor: '#C67C4E',
-        paddingLeft: 140,
-        paddingRight: 140,
-        paddingTop: 20,
-        paddingBottom: 20,
-        borderRadius: 20
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        marginHorizontal: 30
     },
 });

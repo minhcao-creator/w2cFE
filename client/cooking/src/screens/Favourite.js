@@ -16,17 +16,41 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { categoryData } from '../constants';
-import { NavigationContainer } from '@react-navigation/native';
+import { useIsFocused, NavigationContainer } from '@react-navigation/native';
+import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default Favourite = ({ route, navigation }) => {
-    const { meals } = route.params
+    const [favouriteMeals, setFavouriteMeals] = useState([])
+    const isFocused = useIsFocused()
+
+    const favourite = async () => {
+        const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+        await axios.get('https://w2c.onrender.com/user/meals')
+            .then(res => {
+                console.log(res.data)
+                setFavouriteMeals(res.data.meals)
+            })
+            .catch(error => console.log(error))
+    }
+
+    useEffect(() => {
+        favourite()
+        // console.log(favouriteMeals)
+    }, [isFocused])
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{ marginTop: 20 }}>
-                    <Favourites favourites={meals} />
+                    <Favourites favourites={favouriteMeals} />
                 </View>
             </ScrollView>
 
@@ -37,8 +61,8 @@ export default Favourite = ({ route, navigation }) => {
 function Favourites({ favourites }) {
     return (
         <View style={{ marginHorizontal: 30 }}>
-            {
-                favourites.length == 0 ? null : (
+            {  
+                favourites?.length == 0 ? null : (
                     <MasonryList
                         data={favourites}
                         keyExtractor={(item) => item.id}
@@ -59,10 +83,10 @@ function FavouriteCard({ item, index }) {
     return (
         <View>
             <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}>
-                <Image source={{ uri: item.image }} style={styles.itemImage} />
+                <Image source={{ uri: item.meal.image }} style={styles.itemImage} />
                 <Text style={styles.itemName}>
                     {
-                        item.title.length > 15 ? item.title.slice(0, 15) + '...' : item.title
+                        item.meal.title.length > 15 ? item.meal.title.slice(0, 15) + '...' : item.meal.title
                     }
                 </Text>
                 <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>

@@ -26,7 +26,7 @@ export default Meals = ({ route, navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{marginTop: 20}}>
-                    <Favourites favourites={meals} />
+                    <Favourites favourites={meals} navigation={navigation}/>
                 </View>
             </ScrollView>
             
@@ -34,7 +34,7 @@ export default Meals = ({ route, navigation }) => {
     );
 };
 
-function Favourites({ favourites }) {
+function Favourites({ favourites, navigation }) {
     return (
         <View style={{marginHorizontal: 30}}>
         {
@@ -44,7 +44,7 @@ function Favourites({ favourites }) {
                     keyExtractor={(item) => item.id}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
-                    renderItem={({item, i}) => <FavouriteCard item={item} index={i} />}
+                    renderItem={({item, i}) => <FavouriteCard item={item} index={i} navigation={navigation} />}
                     onEndReachedThreshold={0.1}
                 />
             )
@@ -53,21 +53,21 @@ function Favourites({ favourites }) {
     );
 };
 
-function FavouriteCard({ item, index }) {
+function FavouriteCard({ item, index, navigation }) {
     let isEven = index % 2 === 0;
     
     return (
         <View>
-            <Pressable style={[styles.card, {margingLeft: isEven ? 0 : 8.5}, {marginRight: isEven ? 8.5 : 0}]}>
+            <Pressable style={[styles.card, {margingLeft: isEven ? 0 : 8.5}, {marginRight: isEven ? 8.5 : 0}]}
+                onPress={() => navigation.navigate('Meal', {item})}
+            >
                 <Image source={{uri: item.image}} style={styles.itemImage} />
                 <Text style={styles.itemName}>
                 {
                     item.title.length > 15 ? item.title.slice(0, 15) + '...' : item.title
                 }
                 </Text>
-                <TouchableOpacity style={{position: 'absolute', top: 5, right: 5}}>
-                    <Ionicons name={"close-circle-outline"} size={28} color='#000' />
-                </TouchableOpacity>
+                
                 {/* <View style={styles.star}>
                     <AntDesign name="star" size={20} color="#FBBE21" />
                 </View> */}

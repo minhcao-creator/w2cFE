@@ -13,11 +13,11 @@ import Home from "./Home";
 import Profile from "./Profile";
 import TakeAPicScreen from "./TakeAPicScreen";
 import Favourite from "./Favourite";
-import DetailItem from "./DetailItem"
+import DetailItem from "./DetailItem";
 import Meal from "./Meal";
 import Meals from "./Meals";
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -54,13 +54,13 @@ const MyTabs = ({ navigation }) => {
                 tabBarLabel: 'Máy ảnh',
                 headerTitle: "Máy ảnh",
 
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginLeft: 15 }}
-                        onPress={() => navigation.navigate('Home')}
-                    >
-                        <Feather name="chevron-left" size={25} color="black" />
-                    </TouchableOpacity>
-                )
+                // headerLeft: () => (
+                //     <TouchableOpacity style={{ marginLeft: 15 }}
+                //         onPress={() => navigation.navigate('Home')}
+                //     >
+                //         <Feather name="chevron-left" size={25} color="black" />
+                //     </TouchableOpacity>
+                // )
             }} />
             <Tab.Screen name="Favourite" component={Favourite} options={{
                 tabBarIcon: ({ focused, color }) => {
@@ -70,13 +70,13 @@ const MyTabs = ({ navigation }) => {
                 },
                 tabBarLabel: 'Yêu thích',
                 headerTitle: "Món ăn yêu thích",
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginLeft: 15 }}
-                        onPress={() => navigation.navigate('Home')}
-                    >
-                        <Feather name="chevron-left" size={25} color="black" />
-                    </TouchableOpacity>
-                )
+                // headerLeft: () => (
+                //     <TouchableOpacity style={{ marginLeft: 15 }}
+                //         onPress={() => navigation.navigate('Home')}
+                //     >
+                //         <Feather name="chevron-left" size={25} color="black" />
+                //     </TouchableOpacity>
+                // )
             }} />
             <Tab.Screen name="Profile" component={Profile} options={{
                 tabBarIcon: ({ focused, color }) => {
@@ -86,13 +86,13 @@ const MyTabs = ({ navigation }) => {
                 },
                 tabBarLabel: 'Cá nhân',
                 headerTitle: "Thông tin cá nhân",
-                headerLeft: () => (
-                    <TouchableOpacity style={{ marginLeft: 15 }}
-                        onPress={() => navigation.navigate('Home')}
-                    >
-                        <Feather name="chevron-left" size={25} color="black" />
-                    </TouchableOpacity>
-                ),
+                // headerLeft: () => (
+                //     <TouchableOpacity style={{ marginLeft: 15 }}
+                //         onPress={() => navigation.navigate('Home')}
+                //     >
+                //         <Feather name="chevron-left" size={25} color="black" />
+                //     </TouchableOpacity>
+                // ),
                 headerRight: () => (
                     <TouchableOpacity style={{ marginRight: 15 }}
                         onPress={{}}
@@ -108,15 +108,47 @@ const MyTabs = ({ navigation }) => {
 export default RootComponent = function () {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="LogIn">
+            <Stack.Navigator initialRouteName="HomeTabs">
                 <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
                 <Stack.Screen name="LogIn" component={LogIn} options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
                 <Stack.Screen name="HomeTabs" component={MyTabs} options={{ headerShown: false }} />
                 <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-                <Stack.Screen name="DetailItem" component={DetailItem} options={{ headerShown: false }} />
-                <Stack.Screen name="Meal" component={Meal} options={{ headerShown: false }} />
-                <Stack.Screen name="Meals" component={Meals} options={{ headerShown: false }} />
+                <Stack.Screen name="DetailItem" component={DetailItem} options={{
+                    headerTitle: "Nguyên liệu",
+                    headerTitleAlign: 'center',
+                    headerLeft: () => (
+                        <TouchableOpacity style={{ marginLeft: 15 }}
+                            onPress={() => navigation.navigate('HomeTabs')}
+                        >
+                            <Feather name="chevron-left" size={25} color="black" />
+                        </TouchableOpacity>
+                    ),
+                }} />
+                <Stack.Screen name="Meal" component={Meal} options={{
+                    headerTitle: "Chi Tiết Món Ăn",
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                    headerRight: () => (
+                        <TouchableOpacity style={{ marginRight: 15 }}
+                            onPress={{}}
+                        >
+                            <Feather name="heart" size={25} color="black" />
+                        </TouchableOpacity>
+                    )
+                    // headerLeft: () => (
+                    //     <TouchableOpacity style={{ marginLeft: 15 }}
+                    //         onPress={() => navigation.navigate('HomeTabs')}
+                    //     >
+                    //         <Feather name="chevron-left" size={25} color="black" />
+                    //     </TouchableOpacity>
+                    // ),
+                }} />
+                <Stack.Screen name="Meals" component={Meals} options={{
+                    headerTitle: "Danh Sách Món Ăn",
+                    headerTitleAlign: 'center',
+                    headerBackTitleVisible: false,
+                }} />
                 <Stack.Screen name="Favourite" component={Favourite} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>

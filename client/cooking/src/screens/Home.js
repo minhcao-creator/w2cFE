@@ -50,7 +50,7 @@ export default Home = ({ navigation }) => {
         }
         await axios.get('https://w2c.onrender.com/user/ingredients')
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setCategories(res.data.data)
             })
             .catch(error => console.log(error))
@@ -64,7 +64,7 @@ export default Home = ({ navigation }) => {
         if (category.length === 0) {
             setFoods(categories.filter((cat) => cat.name === 'Củ')[0].foodData)
         } else {
-            console.log(category[0].foodData)
+            //console.log(category[0].foodData)
             setFoods(category[0].foodData)
         }
     }
@@ -81,10 +81,10 @@ export default Home = ({ navigation }) => {
         ingredients.map((i) => {
             ings.push(i.title)
         })
-        console.log(ings)
+        //console.log(ings)
         await axios.post('https://w2c.onrender.com/meals/render', { ingredients: ings })
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setMeals(res.data.data)
                 navigation.navigate('Meals', {
                     meals: res.data.data
@@ -163,7 +163,7 @@ export default Home = ({ navigation }) => {
 
                         {/* Ingredient */}
                         <View style={{}}>
-                            <Ingredients ingredients={ingredients} />
+                            <Ingredients ingredients={ingredients} navigation={navigation} />
                         </View>
 
                     </View>
@@ -216,7 +216,7 @@ function Categories({ categories, activeCategory, handleChangeCategory }) {
 }
 
 // Ingredients Component
-function Ingredients({ ingredients }) {
+function Ingredients({ ingredients, navigation }) {
     return (
         <View style={{ marginHorizontal: 30 }}>
             {
@@ -226,7 +226,7 @@ function Ingredients({ ingredients }) {
                         keyExtractor={(item) => item.id}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({ item, i }) => <IngredientCard item={item} index={i} />}
+                        renderItem={({ item, i }) => <IngredientCard item={item} index={i} navigation={navigation} />}
                         onEndReachedThreshold={0.1}
                     />
                 )
@@ -235,7 +235,7 @@ function Ingredients({ ingredients }) {
     );
 };
 
-function IngredientCard({ item, index }) {
+function IngredientCard({ item, index, navigation }) {
     let isEven = index % 2 === 0;
     const hanleDelItem = async () => {
         const token = await AsyncStorage.getItem('my-token');
@@ -244,16 +244,21 @@ function IngredientCard({ item, index }) {
         } else {
             delete axios.defaults.headers.common['Authorization']
         }
-        await axios.delete(`http://192.168.0.106:5000/user/ingredients/${item.id}`)
+        await axios.delete(`https://w2c.onrender.com/user/ingredients/${item.id}`)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
             })
             .catch(error => console.log(error))
     }
 
     return (
         <View>
-            <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}>
+            <Pressable
+                style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}
+                onPress={() => navigation.navigate('DetailItem', {
+                    item
+                })}
+            >
                 <Image source={{ uri: item.image }} style={styles.itemImage} />
                 <Text style={styles.itemName}>{item.title}
                     {/* {

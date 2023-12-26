@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Back from '../../assets/back.svg';
 import { useIsFocused } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TakeAPicScreen({ navigation }) {
   const isFocused = useIsFocused()
@@ -40,7 +42,17 @@ export default function TakeAPicScreen({ navigation }) {
   };
 
   if (photo) {
-    let savePhoto = () => {
+    let savePhoto = async () => {
+      const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+        await axios.post('https://w2c.onrender.com/user/ingredients', { photo: `data:image/jpg;base64,${photo.base64}` })
+            .then(res => console.log(res.data))
+            .catch(error => console.log(error))
+            
       navigation.navigate('DetailItem', {
         photo: photo
       })
@@ -60,7 +72,6 @@ export default function TakeAPicScreen({ navigation }) {
             <Text style={{
               fontSize: 16,
               color: '#ffffff',
-              fontFamily: 'Roboto',
             }}>Bỏ</Text>
           </TouchableOpacity>
 
@@ -71,7 +82,6 @@ export default function TakeAPicScreen({ navigation }) {
             <Text style={{
               fontSize: 16,
               color: '#ffffff',
-              fontFamily: 'Roboto',
             }}>Lưu</Text>
           </TouchableOpacity>
 
