@@ -117,13 +117,14 @@ export default RootComponent = function () {
                 <Stack.Screen name="DetailItem" component={DetailItem} options={{
                     headerTitle: "Nguyên liệu",
                     headerTitleAlign: 'center',
-                    headerLeft: () => (
-                        <TouchableOpacity style={{ marginLeft: 15 }}
-                            onPress={() => navigation.navigate('HomeTabs')}
-                        >
-                            <Feather name="chevron-left" size={25} color="black" />
-                        </TouchableOpacity>
-                    ),
+                    headerBackTitleVisible: false,
+                    // headerLeft: () => (
+                    //     <TouchableOpacity style={{ marginLeft: 15 }}
+                    //         onPress={() => navigation.navigate('HomeTabs')}
+                    //     >
+                    //         <Feather name="chevron-left" size={25} color="black" />
+                    //     </TouchableOpacity>
+                    // ),
                 }} />
                 <Stack.Screen name="Meal" component={Meal} options={{
                     headerTitle: "Chi Tiết Món Ăn",

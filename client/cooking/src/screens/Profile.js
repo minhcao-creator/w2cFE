@@ -50,11 +50,11 @@ export default Profile = ({ navigation }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={styles.avatarContainer}>
-                <Avatar.Image
-                    size={150}
-                    source={{ uri: 'https://img.ws.mms.shopee.vn/4ecc0b21d86d2ff90688c0c28cc6ad0a' }}
-                />
-                <Text style={{ fontSize: 24, fontWeight: '500', padding: 10, textAlign: 'center', textTransform: 'capitalize' }}>
+                <View style={styles.avatarFrame}>
+                    <Text style={{ color: '#000', fontSize: 90, opacity: 0.5, alignSelf: 'center', textTransform: 'uppercase'}}>{profile.username ? profile.username.charAt(0) : 'na'}</Text>
+                </View>
+                
+                <Text style={{ fontSize: 24, fontWeight: '500', marginTop: 20, textAlign: 'center', textTransform: 'capitalize' }}>
                     {profile.username}
                 </Text>
             </View>
@@ -104,6 +104,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
+    },
+    avatarFrame: {
+        justifyContent: 'center',
+        backgroundColor: '#E9ECEF',
+        color: '#000',
+        height: 150,
+        width: 150,
+        borderRadius: 150
     },
     infoContainer: {
         marginHorizontal: 40,

@@ -93,6 +93,27 @@ export default Home = ({ navigation }) => {
             .catch(error => console.log(error))
     }
 
+    const [username, setUsername] = useState("")
+
+    const handleProfile = async () => {
+        const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+        await axios.get('https://w2c.onrender.com/auth')
+            .then(res => {
+                const data = res.data.user
+                setUsername(data.username)
+            })
+            .catch(error => console.log(error))
+
+    }
+    useEffect(() => {
+        handleProfile()
+    }, [])
+
     return (
         <View style={{ backgroundColor: '#fff', width: '100%', height: '100%' }}>
             <StatusBar barStyle='auto' />
@@ -112,15 +133,18 @@ export default Home = ({ navigation }) => {
                     <View style={{ flex: 1 }}>
                         {/* Account */}
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 30, marginTop: 20 }}>
-                            <TouchableOpacity>
-                                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>Hà Thùy Dương</Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Profile')}
+                            >
+                                <Text style={{ fontSize: 16, fontWeight: '700', color: '#fff' }}>{ username }</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity>
-                                <Avatar.Image
-                                    size={50}
-                                    source={{ uri: 'https://img.ws.mms.shopee.vn/4ecc0b21d86d2ff90688c0c28cc6ad0a' }}
-                                />
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Profile')}
+                            >
+                                <View style={styles.avatarFrame}>
+                                    <Text style={{ color: '#000', fontSize: 20, opacity: 0.5, alignSelf: 'center', textTransform: 'uppercase'}}>{username ? username.charAt(0) : 'na'}</Text>
+                                </View>
                             </TouchableOpacity>
                         </View>
 
@@ -339,5 +363,13 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         paddingTop: 19,
         paddingBottom: 40,
+    },
+    avatarFrame: {
+        justifyContent: 'center',
+        backgroundColor: '#E9ECEF',
+        color: '#000',
+        height: 50,
+        width: 50,
+        borderRadius: 50
     },
 });

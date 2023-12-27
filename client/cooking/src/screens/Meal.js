@@ -12,7 +12,6 @@ const {width, height} = Dimensions.get('window');
 export default function Meal({ route, navigation }) {
 
     const { item } = route.params
-    console.log(item)
 
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
     const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
