@@ -108,7 +108,7 @@ const MyTabs = ({ navigation }) => {
 export default RootComponent = function () {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="HomeTabs">
+            <Stack.Navigator initialRouteName="LogIn">
                 <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
                 <Stack.Screen name="LogIn" component={LogIn} options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />

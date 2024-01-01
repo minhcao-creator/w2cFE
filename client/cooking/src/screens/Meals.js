@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { categoryData } from '../constants';
-import { NavigationContainer } from '@react-navigation/native';
+import { useIsFocused, NavigationContainer } from '@react-navigation/native';
 
 export default Meals = ({ route, navigation }) => {
     const {meals} = route.params
@@ -55,11 +55,42 @@ function Favourites({ favourites, navigation }) {
 
 function FavouriteCard({ item, index, navigation }) {
     let isEven = index % 2 === 0;
+    const [favMeals, setFavMeals] = useState()
+    const [fav, setFav] = useState(false)
+    const getFavMeals = async() => {
+        const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+        await axios.get('https://w2c.onrender.com/user/meals')
+            .then(res => {
+                console.log(res.data)
+                setFavMeals(res.data.meals)
+            })
+            .catch(error => console.log(error))
+    }
+
+    const handleHeartActive = async () => {
+        await favMeals.map((favMeal) => {
+            if (favMeal.meal._id == item._id) {
+                setFav(true)
+            }
+        })
+        navigation.navigate('Meal', {item, fav})
+    }
+
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        getFavMeals()
+    }, [isFocused])
     
     return (
         <View>
             <Pressable style={[styles.card, {margingLeft: isEven ? 0 : 8.5}, {marginRight: isEven ? 8.5 : 0}]}
-                onPress={() => navigation.navigate('Meal', {item})}
+                onPress={() => handleHeartActive }
             >
                 <Image source={{uri: item.image}} style={styles.itemImage} />
                 <Text style={styles.itemName}>
