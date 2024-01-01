@@ -50,7 +50,7 @@ export default Favourite = ({ route, navigation }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{ marginTop: 20 }}>
-                    <Favourites favourites={favouriteMeals} />
+                    <Favourites favourites={favouriteMeals} navigation={navigation}/>
                 </View>
             </ScrollView>
 
@@ -58,7 +58,7 @@ export default Favourite = ({ route, navigation }) => {
     );
 };
 
-function Favourites({ favourites }) {
+function Favourites({ favourites, navigation }) {
     return (
         <View style={{ marginHorizontal: 30 }}>
             {  
@@ -68,7 +68,7 @@ function Favourites({ favourites }) {
                         keyExtractor={(item) => item.id}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({ item, i }) => <FavouriteCard item={item} index={i} />}
+                        renderItem={({ item, i }) => <FavouriteCard item={item} index={i} navigation={navigation} />}
                         onEndReachedThreshold={0.1}
                     />
                 )
@@ -77,40 +77,21 @@ function Favourites({ favourites }) {
     );
 };
 
-function FavouriteCard({ item, index }) {
+function FavouriteCard({ item, index, navigation }) {
     let isEven = index % 2 === 0;
-
-    const handleDelete = async () => {
-        const token = await AsyncStorage.getItem('my-token');
-        if (token) {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-        } else {
-            delete axios.defaults.headers.common['Authorization']
-        }
-
-        await axios.delete(`https://w2c.onrender.com/user/meals/${item._id}`)
-            .then(res => {
-                const data = res.data
-                console.log(data)
-            })
-            .catch(error => console.log(error))
-    }
 
     return (
         <View>
-            <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}>
+            <Pressable 
+                style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}
+                onPress={() => navigation.navigate('Meal', { item: item.meal, fav: true, idFav: item._id })}
+            >
                 <Image source={{ uri: item.meal.image }} style={styles.itemImage} />
                 <Text style={styles.itemName}>
                     {
                         item.meal.title.length > 15 ? item.meal.title.slice(0, 15) + '...' : item.meal.title
                     }
                 </Text>
-                <TouchableOpacity
-                    style={{ position: 'absolute', top: 5, right: 5 }}
-                    onPress={handleDelete}
-                >
-                    <Ionicons name={"close-circle-outline"} size={28} color='#000' />
-                </TouchableOpacity>
                 <View style={styles.star}>
                     <AntDesign name="star" size={20} color="#FBBE21" />
                 </View>

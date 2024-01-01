@@ -34,7 +34,7 @@ export default function Meal({ route, navigation }) {
             <View>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Nguyên Liệu Bao Gồm</Text>
 
-                {item.ingredients.map((ing) => (
+                {item.ingredients?.map((ing) => (
                     <Text style={{ fontSize: 16 }}>{ing.title}</Text>
                 ))}
             </View>
@@ -48,7 +48,7 @@ export default function Meal({ route, navigation }) {
             <View>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Các Bước Thực Hiện</Text>
 
-                {steps.map((step) => (
+                {steps?.map((step) => (
                     <Text style={{ fontSize: 16, marginBottom: 20 }}>{ step }</Text>
                 ))}
             </View>
