@@ -10,11 +10,11 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function Meal({ route, navigation }) {
-    const [activeHeart, setActiveHeart] = useState(false);
-    const { item } = route.params
+    const { item, fav } = route.params
+    const [activeHeart, setActiveHeart] = useState(route.params.fav);
 
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
     const [lengthMore, setLengthMore] = useState(false); //to show the "Read more & Less Line"
@@ -33,9 +33,9 @@ export default function Meal({ route, navigation }) {
         return (
             <View>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Nguyên Liệu Bao Gồm</Text>
-                
+
                 {item.ingredients.map((ing) => (
-                    <Text style={{ fontSize: 16 }}>{ ing.title }</Text>
+                    <Text style={{ fontSize: 16 }}>{ing.title}</Text>
                 ))}
             </View>
         )
@@ -47,9 +47,9 @@ export default function Meal({ route, navigation }) {
         return (
             <View>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Các Bước Thực Hiện</Text>
-                
+
                 {steps.map((step) => (
-                    <Text style={{ fontSize: 16 }}>{ step }</Text>
+                    <Text style={{ fontSize: 16 }}>{step}</Text>
                 ))}
             </View>
         )
@@ -62,7 +62,7 @@ export default function Meal({ route, navigation }) {
         } else {
             delete axios.defaults.headers.common['Authorization']
         }
-        await axios.post('https://w2c.onrender.com/user/meals', {meals: [id]})
+        await axios.post('https://w2c.onrender.com/user/meals', { meals: [id] })
             .then(res => {
                 const data = res.data
                 console.log(data)
@@ -75,14 +75,14 @@ export default function Meal({ route, navigation }) {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
-                showsVerticalScrollIndicator = {false}
-                style={{ flex: 1, marginTop: 30, marginHorizontal: 30}}
+                showsVerticalScrollIndicator={false}
+                style={{ flex: 1, marginTop: 30, marginHorizontal: 30 }}
             >
                 <View style={{ alignItems: 'center' }} >
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#EDEDED', height: 50, width: 290, borderRadius: 15 }}>
                         <TouchableOpacity
                             onPress={() => setIngredientMode(true)}
-                            style={ ingredientMode ? styles.activeBtn : styles.btn }
+                            style={ingredientMode ? styles.activeBtn : styles.btn}
                         >
                             <Text style={{
                                 fontSize: 16,
@@ -92,7 +92,7 @@ export default function Meal({ route, navigation }) {
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setIngredientMode(false)}
-                            style={ ingredientMode ? styles.btn : styles.activeBtn }
+                            style={ingredientMode ? styles.btn : styles.activeBtn}
                         >
                             <Text style={{
                                 fontSize: 16,
@@ -118,12 +118,12 @@ export default function Meal({ route, navigation }) {
                 <View style={{ height: 0.5, backgroundColor: 'grey', marginTop: 20 }} />
 
                 <View style={{ marginTop: 20 }}>
-                    { ingredientMode ? (
+                    {ingredientMode ? (
                         ingredientsView()
                     ) : (
                         recipeView()
                     )}
-                </View>  
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -139,9 +139,9 @@ const styles = StyleSheet.create({
     },
     activeBtn: {
         borderRadius: 10,
-        height: 40, 
-        width: 140, 
-        backgroundColor: '#C67C4E', 
+        height: 40,
+        width: 140,
+        backgroundColor: '#C67C4E',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         width: 140,
         backgroundColor: '#EDEDED',
         flexDirection: 'row',
-        alignItems: 'center', 
+        alignItems: 'center',
         justifyContent: 'center',
     }
 });

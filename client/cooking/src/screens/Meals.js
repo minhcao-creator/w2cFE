@@ -17,38 +17,40 @@ import { AntDesign } from '@expo/vector-icons';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { categoryData } from '../constants';
 import { useIsFocused, NavigationContainer } from '@react-navigation/native';
+import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default Meals = ({ route, navigation }) => {
-    const {meals} = route.params
+    const { meals } = route.params
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
             >
-                <View style={{marginTop: 20}}>
-                    <Favourites favourites={meals} navigation={navigation}/>
+                <View style={{ marginTop: 20 }}>
+                    <Favourites favourites={meals} navigation={navigation} />
                 </View>
             </ScrollView>
-            
+
         </SafeAreaView>
     );
 };
 
 function Favourites({ favourites, navigation }) {
     return (
-        <View style={{marginHorizontal: 30}}>
-        {
-            favourites.length == 0 ? null : (
-                <MasonryList
-                    data={favourites}
-                    keyExtractor={(item) => item.id}
-                    numColumns={2}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({item, i}) => <FavouriteCard item={item} index={i} navigation={navigation} />}
-                    onEndReachedThreshold={0.1}
-                />
-            )
-        }
+        <View style={{ marginHorizontal: 30 }}>
+            {
+                favourites.length == 0 ? null : (
+                    <MasonryList
+                        data={favourites}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item, i }) => <FavouriteCard item={item} index={i} navigation={navigation} />}
+                        onEndReachedThreshold={0.1}
+                    />
+                )
+            }
         </View>
     );
 };
@@ -57,7 +59,7 @@ function FavouriteCard({ item, index, navigation }) {
     let isEven = index % 2 === 0;
     const [favMeals, setFavMeals] = useState()
     const [fav, setFav] = useState(false)
-    const getFavMeals = async() => {
+    const getFavMeals = async () => {
         const token = await AsyncStorage.getItem('my-token');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -66,19 +68,20 @@ function FavouriteCard({ item, index, navigation }) {
         }
         await axios.get('https://w2c.onrender.com/user/meals')
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setFavMeals(res.data.meals)
             })
             .catch(error => console.log(error))
     }
 
     const handleHeartActive = async () => {
-        await favMeals.map((favMeal) => {
+        await favMeals.map((favMeal, key) => {
             if (favMeal.meal._id == item._id) {
                 setFav(true)
             }
         })
-        navigation.navigate('Meal', {item, fav})
+        // console.log(fav)
+        navigation.navigate('Meal', { item, fav })
     }
 
     const isFocused = useIsFocused();
@@ -86,19 +89,19 @@ function FavouriteCard({ item, index, navigation }) {
     useEffect(() => {
         getFavMeals()
     }, [isFocused])
-    
+
     return (
         <View>
-            <Pressable style={[styles.card, {margingLeft: isEven ? 0 : 8.5}, {marginRight: isEven ? 8.5 : 0}]}
-                onPress={() => handleHeartActive }
+            <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}
+                onPress={handleHeartActive}
             >
-                <Image source={{uri: item.image}} style={styles.itemImage} />
+                <Image source={{ uri: item.image }} style={styles.itemImage} />
                 <Text style={styles.itemName}>
-                {
-                    item.title.length > 15 ? item.title.slice(0, 15) + '...' : item.title
-                }
+                    {
+                        item.title.length > 15 ? item.title.slice(0, 15) + '...' : item.title
+                    }
                 </Text>
-                
+
                 {/* <View style={styles.star}>
                     <AntDesign name="star" size={20} color="#FBBE21" />
                 </View> */}
