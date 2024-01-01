@@ -44,6 +44,11 @@ export default Profile = ({ navigation }) => {
             .catch(error => console.log(error))
 
     }
+
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem('my-token');
+        navigation.navigate('LogIn')
+    }
     useEffect(() => {
         handleProfile()
     }, [])
@@ -51,9 +56,9 @@ export default Profile = ({ navigation }) => {
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <View style={styles.avatarContainer}>
                 <View style={styles.avatarFrame}>
-                    <Text style={{ color: '#000', fontSize: 90, opacity: 0.5, alignSelf: 'center', textTransform: 'uppercase'}}>{profile.username ? profile.username.charAt(0) : 'na'}</Text>
+                    <Text style={{ color: '#000', fontSize: 90, opacity: 0.5, alignSelf: 'center', textTransform: 'uppercase' }}>{profile.username ? profile.username.charAt(0) : 'na'}</Text>
                 </View>
-                
+
                 <Text style={{ fontSize: 24, fontWeight: '500', marginTop: 20, textAlign: 'center', textTransform: 'capitalize' }}>
                     {profile.username}
                 </Text>
@@ -87,6 +92,7 @@ export default Profile = ({ navigation }) => {
             <View style={styles.logoutContainer}>
                 <TouchableOpacity
                     style={styles.logoutButton}
+                    onPress={handleLogout}
                 >
                     <View style={{ marginRight: 15 }}>
                         <Feather name="log-out" size={25} color="#fff" />

@@ -28,10 +28,9 @@ export default SignUp = ({ navigation }) => {
             .then(async res => {
                 const token = res.data.accessToken
                 await AsyncStorage.setItem('my-token', token);
+                navigation.navigate('HomeTabs')
             })
             .catch(error => console.log(error))
-
-        navigation.navigate('HomeTabs')
     }
 
     return (
