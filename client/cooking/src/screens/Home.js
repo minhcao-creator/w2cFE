@@ -52,10 +52,9 @@ export default Home = ({ navigation }) => {
             .then(res => {
                 // console.log(res.data)
                 setCategories(res.data.data)
+                getFoods(activeCategory)
             })
             .catch(error => console.log(error))
-
-        getFoods()
     }
 
     const getFoods = (categoryName) => {
