@@ -80,6 +80,22 @@ function Favourites({ favourites }) {
 function FavouriteCard({ item, index }) {
     let isEven = index % 2 === 0;
 
+    const handleDelete = async () => {
+        const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+
+        await axios.delete(`https://w2c.onrender.com/user/meals/${item._id}`)
+            .then(res => {
+                const data = res.data
+                console.log(data)
+            })
+            .catch(error => console.log(error))
+    }
+
     return (
         <View>
             <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}>
@@ -89,7 +105,10 @@ function FavouriteCard({ item, index }) {
                         item.meal.title.length > 15 ? item.meal.title.slice(0, 15) + '...' : item.meal.title
                     }
                 </Text>
-                <TouchableOpacity style={{ position: 'absolute', top: 5, right: 5 }}>
+                <TouchableOpacity
+                    style={{ position: 'absolute', top: 5, right: 5 }}
+                    onPress={handleDelete}
+                >
                     <Ionicons name={"close-circle-outline"} size={28} color='#000' />
                 </TouchableOpacity>
                 <View style={styles.star}>

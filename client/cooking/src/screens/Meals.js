@@ -22,13 +22,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default Meals = ({ route, navigation }) => {
     const { meals } = route.params
+    const isFocused = useIsFocused()
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
                 showsVerticalScrollIndicator={false}
             >
                 <View style={{ marginTop: 20 }}>
-                    <Favourites favourites={meals} navigation={navigation} />
+                    <Favourites favourites={meals} isFocused={isFocused} navigation={navigation} />
                 </View>
             </ScrollView>
 
@@ -36,8 +38,9 @@ export default Meals = ({ route, navigation }) => {
     );
 };
 
-function Favourites({ favourites, navigation }) {
+function Favourites({ favourites, navigation, isFocused }) {
     const [favMeals, setFavMeals] = useState()
+
     const getFavMeals = async () => {
         const token = await AsyncStorage.getItem('my-token');
         if (token) {
@@ -54,7 +57,8 @@ function Favourites({ favourites, navigation }) {
     }
     useEffect(() => {
         getFavMeals()
-    }, [])
+    }, [isFocused])
+
     return (
         <View style={{ marginHorizontal: 30 }}>
             {
@@ -77,11 +81,15 @@ function FavouriteCard({ item, index, navigation, favMeals }) {
     let isEven = index % 2 === 0;
     const [fav, setFav] = useState(false)
     // console.log(favMeals)
+    const [idFav, setIdFav] = useState()
 
-    const hehe = () => {
+    const handleIdFav = () => {
+        setFav(false)
+        
         for (var i = 0; i < favMeals?.length; i++) {
             if (favMeals[i].meal._id === item._id) {
                 setFav(true)
+                setIdFav(favMeals[i]._id)
                 i = favMeals.length
             }
         }
@@ -94,7 +102,7 @@ function FavouriteCard({ item, index, navigation, favMeals }) {
     // }
 
     useEffect(() => {
-        hehe()
+        handleIdFav()
     }, [favMeals])
 
     return (
@@ -102,7 +110,7 @@ function FavouriteCard({ item, index, navigation, favMeals }) {
             <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}
                 onPress={() => {
                     console.log(fav)
-                    navigation.navigate('Meal', { item, fav })
+                    navigation.navigate('Meal', { item, fav, idFav })
                 }}
             >
                 <Image source={{ uri: item.image }} style={styles.itemImage} />

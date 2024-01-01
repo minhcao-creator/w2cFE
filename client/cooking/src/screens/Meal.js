@@ -62,12 +62,21 @@ export default function Meal({ route, navigation }) {
         } else {
             delete axios.defaults.headers.common['Authorization']
         }
+        activeHeart ? (
+            await axios.delete(`https://w2c.onrender.com/user/meals/${route.params.idFav}`)
+                .then(res => {
+                    const data = res.data
+                    console.log(data)
+                })
+                .catch(error => console.log(error))
+        ) : (
         await axios.post('https://w2c.onrender.com/user/meals', { meals: [id] })
             .then(res => {
                 const data = res.data
                 console.log(data)
             })
             .catch(error => console.log(error))
+        )
 
         setActiveHeart(!activeHeart);
     }
