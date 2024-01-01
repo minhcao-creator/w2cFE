@@ -23,7 +23,7 @@ export default SignUp = ({ navigation }) => {
     const [isVisible, setIsVisible] = React.useState(false);
 
     const handleLogin = async () => {
-        await axios.post('https://w2c.onrender.com/auth/login', { email, password })
+        await axios.post('https://w2c.onrender.com/auth/login', { email: email.toLowerCase() , password })
             .then(async res => {
                 const token = res.data.accessToken
                 await AsyncStorage.setItem('my-token', token);
@@ -133,6 +133,7 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         borderBottomColor: "#eee",
         fontSize: 16,
+        textTransform: 'lowercase'
     },
     visibleButton: {
         position: 'absolute',
