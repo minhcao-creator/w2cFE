@@ -33,7 +33,7 @@ export default Favourite = ({ route, navigation }) => {
         }
         await axios.get('https://w2c.onrender.com/user/meals')
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setFavouriteMeals(res.data.meals)
             })
             .catch(error => console.log(error))

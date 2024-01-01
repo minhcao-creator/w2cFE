@@ -50,12 +50,12 @@ export default function TakeAPicScreen({ navigation }) {
             delete axios.defaults.headers.common['Authorization']
         }
         await axios.post('https://w2c.onrender.com/user/ingredients', { photo: `data:image/jpg;base64,${photo.base64}` })
-            .then(res => console.log(res.data))
+            .then(res => 
+              navigation.navigate('DetailItem', {
+                photo: photo,
+                item: res.data.ingredient
+              }))
             .catch(error => console.log(error))
-            
-      navigation.navigate('DetailItem', {
-        photo: photo
-      })
       setPhoto(undefined)
       // setHasCameraPermission(undefined)
     };

@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // require the module
 // var RNFS = require('react-native-fs');
 // var path = RNFS.DocumentDirectoryPath + '/test.txt';
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 export default function DetaiItem({ route, navigation }) {
 
@@ -64,19 +64,19 @@ export default function DetaiItem({ route, navigation }) {
     }
 
     const getPhoto = () => {
-        if(typeof item == undefined) {
-            console.log(item)
+        if (photo) {
+            // console.log(item)
             return "data:image/jpg;base64," + photo.base64
         } else {
-            console.log(item)
+            // console.log(item)
             return item.image
         }
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff'}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
-                showsVerticalScrollIndicator = {false}
+                showsVerticalScrollIndicator={false}
                 style={{ marginHorizontal: 30 }}
             >
                 <View style={{ alignItems: 'center' }}>
@@ -86,7 +86,7 @@ export default function DetaiItem({ route, navigation }) {
                     <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{item.title}</Text>
                 </View>
                 <View style={{ height: 0.5, backgroundColor: 'grey', marginTop: 20 }} />
-                <View style={{ marginVertical: 20}}>
+                <View style={{ marginVertical: 20 }}>
                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Mô Tả</Text>
                     <Text
                         onTextLayout={onTextLayout}
@@ -99,7 +99,7 @@ export default function DetaiItem({ route, navigation }) {
                             style={{ fontSize: 16, marginTop: 5, fontStyle: 'italic' }}>{textShown ? 'Rút Gọn' : 'Đọc Thêm'}</Text>
                             : null
                     }
-                </View>  
+                </View>
             </ScrollView>
             <View style={{ marginBottom: 20 }}>
                 <TouchableOpacity
@@ -112,7 +112,7 @@ export default function DetaiItem({ route, navigation }) {
                         fontWeight: 'bold',
                     }}>Lưu Lại</Text>
                 </TouchableOpacity>
-            </View>      
+            </View>
         </SafeAreaView>
     );
 }
