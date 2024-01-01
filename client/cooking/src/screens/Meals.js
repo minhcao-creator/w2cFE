@@ -37,28 +37,7 @@ export default Meals = ({ route, navigation }) => {
 };
 
 function Favourites({ favourites, navigation }) {
-    return (
-        <View style={{ marginHorizontal: 30 }}>
-            {
-                favourites.length == 0 ? null : (
-                    <MasonryList
-                        data={favourites}
-                        keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        showsVerticalScrollIndicator={false}
-                        renderItem={({ item, i }) => <FavouriteCard item={item} index={i} navigation={navigation} />}
-                        onEndReachedThreshold={0.1}
-                    />
-                )
-            }
-        </View>
-    );
-};
-
-function FavouriteCard({ item, index, navigation }) {
-    let isEven = index % 2 === 0;
     const [favMeals, setFavMeals] = useState()
-    const [fav, setFav] = useState(false)
     const getFavMeals = async () => {
         const token = await AsyncStorage.getItem('my-token');
         if (token) {
@@ -73,27 +52,58 @@ function FavouriteCard({ item, index, navigation }) {
             })
             .catch(error => console.log(error))
     }
-
-    const handleHeartActive = async () => {
-        await favMeals.map((favMeal, key) => {
-            if (favMeal.meal._id == item._id) {
-                setFav(true)
-            }
-        })
-        // console.log(fav)
-        navigation.navigate('Meal', { item, fav })
-    }
-
-    const isFocused = useIsFocused();
-
     useEffect(() => {
         getFavMeals()
-    }, [isFocused])
+    }, [])
+    return (
+        <View style={{ marginHorizontal: 30 }}>
+            {
+                favourites.length == 0 ? null : (
+                    <MasonryList
+                        data={favourites}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item, i }) => <FavouriteCard item={item} index={i} navigation={navigation} favMeals={favMeals} />}
+                        onEndReachedThreshold={0.1}
+                    />
+                )
+            }
+        </View>
+    );
+};
+
+function FavouriteCard({ item, index, navigation, favMeals }) {
+    let isEven = index % 2 === 0;
+    const [fav, setFav] = useState(false)
+    // console.log(favMeals)
+
+    const hehe = () => {
+        for (var i = 0; i < favMeals?.length; i++) {
+            if (favMeals[i].meal._id === item._id) {
+                setFav(true)
+                i = favMeals.length
+            }
+        }
+    }
+
+    // const handleHeartActive = async () => {
+    //     await hehe()
+    //     // console.log(favMeals)
+    //     // navigation.navigate('Meal', { item, fav })
+    // }
+
+    useEffect(() => {
+        hehe()
+    }, [favMeals])
 
     return (
         <View>
             <Pressable style={[styles.card, { margingLeft: isEven ? 0 : 8.5 }, { marginRight: isEven ? 8.5 : 0 }]}
-                onPress={handleHeartActive}
+                onPress={() => {
+                    console.log(fav)
+                    navigation.navigate('Meal', { item, fav })
+                }}
             >
                 <Image source={{ uri: item.image }} style={styles.itemImage} />
                 <Text style={styles.itemName}>
