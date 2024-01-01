@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Button, Image, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,11 +9,14 @@ import { useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const {width, height} = Dimensions.get('window');
+
 export default function TakeAPicScreen({ navigation }) {
   const isFocused = useIsFocused()
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [photo, setPhoto] = useState();
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +46,8 @@ export default function TakeAPicScreen({ navigation }) {
 
   if (photo) {
     let savePhoto = async () => {
+      setLoader(true);
+
       const token = await AsyncStorage.getItem('my-token');
         if (token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -57,17 +62,19 @@ export default function TakeAPicScreen({ navigation }) {
               }))
             .catch(error => console.log(error))
       setPhoto(undefined)
+      setLoader(false)
       // setHasCameraPermission(undefined)
     };
 
     return (
       <SafeAreaView style={styles.container}>
         <Image style={styles.preview} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
+        <ActivityIndicator style={{position: 'absolute', top: 0.3 * height, left: 0.5 * width - 50 }} size={100} animating={loader} />
         <View style={styles.container1}>
 
           <TouchableOpacity
             onPress={() => setPhoto(undefined)}
-            style={styles.button1}
+            style={[styles.button1, {opacity: loader ? 0.3 : 1}]}
           >
             <Text style={{
               fontSize: 16,
@@ -77,7 +84,7 @@ export default function TakeAPicScreen({ navigation }) {
 
           <TouchableOpacity
             onPress={savePhoto}
-            style={styles.button1}
+            style={[styles.button1, {opacity: loader ? 0.3 : 1}]}
           >
             <Text style={{
               fontSize: 16,
