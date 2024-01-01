@@ -25,7 +25,7 @@ import { useIsFocused, NavigationContainer } from '@react-navigation/native';
 
 
 export default Home = ({ navigation }) => {
-    const [activeCategory, setActiveCategory] = React.useState('Củ')
+    const [activeCategory, setActiveCategory] = React.useState('')
     const [categories, setCategories] = React.useState([])
     const [ingredients, setFoods] = React.useState([])
     const isFocused = useIsFocused();
@@ -52,20 +52,15 @@ export default Home = ({ navigation }) => {
             .then(res => {
                 // console.log(res.data)
                 setCategories(res.data.data)
-                getFoods(activeCategory)
+                //getFoods(activeCategory)
             })
             .catch(error => console.log(error))
     }
 
-    const getFoods = (categoryName) => {
+    const getFoods = async (categoryName) => {
         const category = categories.filter((cat) => cat.name === categoryName)
 
-        if (category.length === 0) {
-            setFoods(categories.filter((cat) => cat.name === 'Củ')[0].foodData)
-        } else {
-            //console.log(category[0].foodData)
-            setFoods(category[0].foodData)
-        }
+        setFoods(category[0].foodData)
     }
 
     const renderMeals = async () => {
