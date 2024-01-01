@@ -228,7 +228,7 @@ function Categories({ categories, activeCategory, handleChangeCategory }) {
                                     { fontWeight: handleColor(cat).fontWeight },
                                     { color: handleColor(cat).color },]}
                                 >
-                                    {cat.name}
+                                    {cat.name == "Nấm" ? "Trứng" : cat.name}
                                 </Text>
                             </TouchableOpacity>
                         )
