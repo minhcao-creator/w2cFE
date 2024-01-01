@@ -49,7 +49,7 @@ export default function Meal({ route, navigation }) {
                 <Text style={{ fontSize: 16, fontWeight: 'bold', marginBottom: 20 }}>Các Bước Thực Hiện</Text>
 
                 {steps.map((step) => (
-                    <Text style={{ fontSize: 16 }}>{step}</Text>
+                    <Text style={{ fontSize: 16, marginBottom: 20 }}>{ step }</Text>
                 ))}
             </View>
         )
