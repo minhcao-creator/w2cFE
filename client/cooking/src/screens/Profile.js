@@ -99,7 +99,6 @@ export default Profile = ({ navigation }) => {
                     </View>
                     <Text style={{ fontSize: 16, fontWeight: '500', textTransform: 'capitalize', color: '#fff' }}>Đăng xuất</Text>
                 </TouchableOpacity>
-                <View></View>
             </View>
         </SafeAreaView>
     );
@@ -139,6 +138,7 @@ const styles = StyleSheet.create({
     logoutButton: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: "#C67C4D",
         padding: 14,
         borderRadius: 10,
