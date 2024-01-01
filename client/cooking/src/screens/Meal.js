@@ -6,11 +6,14 @@ import Trash from '../../assets/trash.svg'
 import { useState, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const {width, height} = Dimensions.get('window');
 
 export default function Meal({ route, navigation }) {
-
+    const [activeHeart, setActiveHeart] = useState(false);
     const { item } = route.params
 
     const [textShown, setTextShown] = useState(false); //To show ur remaining Text
@@ -52,6 +55,23 @@ export default function Meal({ route, navigation }) {
         )
     }
 
+    const handleHeart = async (id) => {
+        const token = await AsyncStorage.getItem('my-token');
+        if (token) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        } else {
+            delete axios.defaults.headers.common['Authorization']
+        }
+        await axios.post('https://w2c.onrender.com/user/meals', {meals: [id]})
+            .then(res => {
+                const data = res.data
+                console.log(data)
+            })
+            .catch(error => console.log(error))
+
+        setActiveHeart(!activeHeart);
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
             <ScrollView
@@ -88,6 +108,11 @@ export default function Meal({ route, navigation }) {
 
                 <View style={{ flexDirection: 'column', alignItems: 'center' }}>
                     <Text style={{ fontSize: 24, fontWeight: 'bold', textTransform: 'capitalize' }}>{item.title}</Text>
+                    <TouchableOpacity style={{ marginTop: 20 }}
+                        onPress={() => handleHeart(item._id)}
+                    >
+                        <AntDesign name={activeHeart ? "heart" : "hearto"} size={25} color={activeHeart ? "red" : "black"} />
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{ height: 0.5, backgroundColor: 'grey', marginTop: 20 }} />

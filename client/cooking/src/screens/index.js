@@ -108,7 +108,7 @@ const MyTabs = ({ navigation }) => {
 export default RootComponent = function () {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Onboarding">
+            <Stack.Navigator initialRouteName="HomeTabs">
                 <Stack.Screen name="Onboarding" component={Onboarding} options={{ headerShown: false }} />
                 <Stack.Screen name="LogIn" component={LogIn} options={{ headerShown: false }} />
                 <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
@@ -130,13 +130,6 @@ export default RootComponent = function () {
                     headerTitle: "Chi Tiết Món Ăn",
                     headerTitleAlign: 'center',
                     headerBackTitleVisible: false,
-                    headerRight: () => (
-                        <TouchableOpacity style={{ marginRight: 15 }}
-                            onPress={{}}
-                        >
-                            <Feather name="heart" size={25} color="black" />
-                        </TouchableOpacity>
-                    )
                     // headerLeft: () => (
                     //     <TouchableOpacity style={{ marginLeft: 15 }}
                     //         onPress={() => navigation.navigate('HomeTabs')}
